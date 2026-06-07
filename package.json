@@ -1,0 +1,17 @@
+{
+  "name": "@nijipe/node",
+  "version": "1.0.0",
+  "description": "Official Node.js and TypeScript SDK for the Nijipe API.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nijipe",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
