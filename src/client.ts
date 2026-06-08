@@ -20,7 +20,7 @@ export class Nijipe {
       throw new Error("Nijipe API key is required.");
     }
     this.apiKey = options.apiKey;
-    this.baseUrl = options.baseUrl || 'https://api.nijipe.com/v1';
+    this.baseUrl = options.baseUrl || 'https://www.nijipe.com/api/v1';
 
     this.invoices = new Invoices(this);
     this.checkout = new Checkout(this);
