@@ -10,8 +10,8 @@
   },
   "author": "Nijipe",
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^25.9.2",
     "typescript": "^5.0.0"
   }
 }
