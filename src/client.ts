@@ -47,8 +47,15 @@ export class Nijipe {
     const response = await fetch(url, options);
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+      let rawText = '';
+      try {
+        rawText = await response.text();
+        const errorData = JSON.parse(rawText);
+        throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+      } catch (parseError: any) {
+        if (parseError.message.includes('Nijipe API Error')) throw parseError;
+        throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - Raw Body: ${rawText.substring(0, 500)}`);
+      }
     }
 
     return response.json() as Promise<T>;
