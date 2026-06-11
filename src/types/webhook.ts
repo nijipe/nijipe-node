@@ -5,7 +5,14 @@ export interface WebhookVerifyParams {
 }
 
 export interface WebhookEvent {
-  id: string;
-  type: string;
-  data: any;
+  event: string;
+  invoiceId: string;
+  orderId: string;
+  total: number;
+  btcAmount: number;
+  status: string;
+  merchantSettlement: number;
+  platformFee: number;
+  timestamp: string | Date;
+  [key: string]: any; // Allow for other fields that might be included
 }

@@ -6,6 +6,11 @@ export class Webhooks {
     const { payload, signature, secret } = params;
 
     const payloadString = Buffer.isBuffer(payload) ? payload.toString('utf8') : payload;
+    
+    if (typeof payloadString !== 'string') {
+      throw new Error("Webhook payload must be a string or Buffer (the raw request body). If you are using Express, ensure you use express.raw({ type: 'application/json' }) to get the raw body. Passing a parsed JSON object will result in signature verification failure.");
+    }
+
     const sigString = Array.isArray(signature) ? signature[0] : signature;
 
     // Expected format: t=timestamp,v1=signature
