@@ -20,6 +20,16 @@ export class Nijipe {
       throw new Error("Nijipe API key is required.");
     }
     this.apiKey = options.apiKey;
+    
+    // Validate baseUrl to prevent 308 redirect header dropping and internal RPC confusion
+    if (options.baseUrl) {
+      if (options.baseUrl.includes('api.nijipe.com')) {
+        console.warn('⚠️ [Nijipe SDK Warning]: api.nijipe.com is reserved for internal Bitcoin nodes. Please use https://www.nijipe.com/api/v1');
+      } else if (options.baseUrl.match(/^https?:\/\/nijipe\.com/)) {
+        console.warn('⚠️ [Nijipe SDK Warning]: Requests to the root domain (nijipe.com) will trigger a 308 redirect which drops the Authorization header. Please use https://www.nijipe.com/api/v1');
+      }
+    }
+
     this.baseUrl = options.baseUrl || 'https://www.nijipe.com/api/v1';
 
     this.invoices = new Invoices(this);
