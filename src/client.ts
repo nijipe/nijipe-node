@@ -56,18 +56,23 @@ export class Nijipe {
 
     const response = await fetch(url, options);
     
-    if (!response.ok) {
-      let rawText = '';
-      try {
-        rawText = await response.text();
-        const errorData = JSON.parse(rawText);
-        throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
-      } catch (parseError: any) {
-        if (parseError.message.includes('Nijipe API Error')) throw parseError;
-        throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - Raw Body: ${rawText.substring(0, 500)}`);
-      }
-    }
+      if (!response.ok) {
+        let rawText = '';
+        try {
+          rawText = await response.text();
+          const errorData = JSON.parse(rawText);
+          
+          if (errorData?.error && typeof errorData.error === 'string' && errorData.error.includes('STRICT_NON_CUSTODIAL_LAW_ENFORCED')) {
+            throw new Error(`\n[Nijipe Strict Non-Custodial Law Enforced]: ⚖️\nYour Mainnet invoice generation was aggressively aborted.\nReason: The Nijipe platform could not establish a direct peer-to-peer route to your Lightning node or XPUB.\nAction Required: To protect user funds from custodial escrow, you must configure a valid Lightning Address or XPUB in your merchant dashboard to accept Mainnet payments.\n`);
+          }
 
-    return response.json() as Promise<T>;
+          throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
+        } catch (parseError: any) {
+          if (parseError.message.includes('Nijipe API Error') || parseError.message.includes('[Nijipe Strict Non-Custodial Law Enforced]')) throw parseError;
+          throw new Error(`Nijipe API Error: ${response.status} ${response.statusText} - Raw Body: ${rawText.substring(0, 500)}`);
+        }
+      }
+
+      return response.json() as Promise<T>;
+    }
   }
-}
