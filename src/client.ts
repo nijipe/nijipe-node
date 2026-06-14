@@ -75,4 +75,33 @@ export class Nijipe {
 
       return response.json() as Promise<T>;
     }
+
+  /**
+   * Subscribe to real-time status updates for a specific invoice via Server-Sent Events (SSE).
+   * @param invoiceId The ID of the invoice to listen to.
+   * @param onUpdate Callback function triggered when the invoice status changes (e.g. 'payment_detected', 'paid')
+   */
+  public subscribeToUpdates(invoiceId: string, onUpdate: (data: { status: string; txid?: string }) => void): any {
+    const url = `${this.baseUrl}/invoices/${invoiceId}/stream`;
+    
+    // Polyfill or native EventSource depending on Node vs Browser environment
+    const EventSourceClient = typeof window !== 'undefined' ? (window as any).EventSource : require('eventsource');
+    const source = new EventSourceClient(url);
+
+    source.addEventListener('status_update', (event: any) => {
+      try {
+        const data = JSON.parse(event.data);
+        onUpdate(data);
+        
+        // Auto-close connection if a terminal state is reached
+        if (['paid', 'confirmed', 'failed', 'canceled', 'expired'].includes(data.status)) {
+          source.close();
+        }
+      } catch (err) {
+        console.error("[Nijipe SDK] Failed to parse SSE stream data", err);
+      }
+    });
+
+    return source;
   }
+}

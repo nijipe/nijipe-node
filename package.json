@@ -23,7 +23,11 @@
   "author": "Nijipe",
   "license": "MIT",
   "devDependencies": {
+    "@types/eventsource": "^1.1.15",
     "@types/node": "^25.9.2",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "eventsource": "^4.1.0"
   }
 }
