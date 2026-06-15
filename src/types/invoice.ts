@@ -10,6 +10,9 @@ export interface InvoiceParams {
     qty: number;
     price: number;
   }>;
+  isEscrow?: boolean;
+  escrowBuyerPubkey?: string;
+  escrowPlatformKey?: string;
 }
 
 export interface InvoiceResponse {
@@ -30,6 +33,9 @@ export interface InvoiceResponse {
   networkFeeEstimate: number;
   status: 'pending' | 'confirmed' | 'paid' | 'expired' | 'cancelled';
   network: string;
+  isEscrow?: boolean;
+  escrowWitnessScript?: string;
+  escrowBuyerPubkey?: string;
   createdAt: string;
   expiresAt: string;
 }
